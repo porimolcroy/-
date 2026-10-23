@@ -1,152 +1,216 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light">
-<title>প্রফেশনাল লাইব্রেরি বারকোড জেনারেটর</title>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<style>
-*{box-sizing:border-box}
-:root{padding-top:env(safe-area-inset-top,0px)}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;margin:0;padding:15px;padding-bottom:110px}
-.no-print{text-align:center;margin-bottom:15px}
-.status{font-size:13px;color:#555;min-height:18px}
-.status.err{color:#b02a37}
-.grid-container{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:1000px;margin:0 auto}
-.barcode-card{background:#fff;border:1px solid #ccc;padding:4px;text-align:center;border-radius:4px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:0}
-.input-box{width:100%;padding:4px;border:1px solid #bbb;border-radius:3px;font-size:11px;outline:none;margin-bottom:4px}
-.controls{text-align:center;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));position:fixed;bottom:0;left:0;width:100%;background:#fff;border-top:2px solid #28a745;box-shadow:0 -2px 8px rgba(0,0,0,.1);display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center}
-button,.upload-btn{padding:8px 16px;cursor:pointer;border-radius:4px;border:none;font-weight:bold;font-size:13px;font-family:inherit;display:inline-block}
-.add-btn{background:#28a745;color:#fff}
-.print-btn{background:#007bff;color:#fff}
-.upload-btn{background:#fd7e14;color:#fff}
-.clear-btn{background:#dc3545;color:#fff}
-.inventor-btn{background:#6c757d;color:#fff}
-.hdr{font-size:13px;display:flex;align-items:center;gap:4px;cursor:pointer}
-#file-input{display:none}
-:focus-visible{outline:2px solid #007bff;outline-offset:2px}
-.modal{display:none;position:fixed;z-index:1000;inset:0;background:rgba(0,0,0,.5);justify-content:center;align-items:center}
-.modal-content{background:#fff;padding:20px;border-radius:6px;width:300px;max-width:90%;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.2)}
-.close-btn{background:#dc3545;color:#fff;padding:5px 10px;margin-top:15px;border:none;border-radius:3px;cursor:pointer}
-@media (max-width:700px){.grid-container{grid-template-columns:repeat(2,1fr)}}
-@media print{
-@page{size:A4;margin:8mm}
-body{background:#fff;padding:0}
-:root{padding-top:0}
-.no-print{display:none!important}
-.grid-container{grid-template-columns:repeat(4,1fr)!important;gap:2mm}
-.barcode-card{border:.1px solid #aaa;padding:1.5mm;page-break-inside:avoid;height:auto!important;min-height:0!important}
-svg{width:100%!important;height:auto!important;display:block}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ভজন ও কীর্তন সংকলন</title>
+    <style>
+        :root {
+            --primary-color: #ff6f00;
+            --secondary-color: #ffe0b2;
+            --text-color: #333;
+            --bg-color: #fff8e1;
+        }
+
+        body {
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        nav {
+            background-color: #e65100;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-item > a {
+            display: block;
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .menu-item > a:hover {
+            background-color: #ff8f00;
+        }
+
+        .submenu {
+            list-style: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 100;
+        }
+
+        .submenu li a {
+            color: #333;
+            padding: 10px 15px;
+            display: block;
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+            text-align: left;
+        }
+
+        .submenu li a:hover {
+            background-color: var(--secondary-color);
+            color: #d84315;
+        }
+
+        .menu-item:hover .submenu {
+            display: block;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            min-height: 350px;
+            text-align: center;
+        }
+
+        .content-box h2 {
+            color: #d84315;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .kirtan-text {
+            line-height: 2;
+            font-size: 18px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #3e2723;
+            color: white;
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="no-print">
-  <h3 style="margin:0 0 5px 0">বারকোড তৈরির সাইট</h3>
-  <div id="status" class="status">Excel ফাইলের প্রথম কলামের সংখ্যা আপলোড করলে অটো বারকোড হবে।</div>
-</div>
+    <header>
+        <h1>শ্রীশ্রী কৃষ্ণ ও ভক্তসংকলন</h1>
+        <p>ভজন, কীর্তন ও বন্দনা সমাহার</p>
+    </header>
 
-<div id="barcode-grid" class="grid-container"></div>
+    <nav>
+        <ul class="menu">
+            <li class="menu-item">
+                <a href="#">গুরু বন্দনা ▾</a>
+                <ul class="submenu">
+                    <li><a href="#" onclick="loadContent('গুরু বন্দনা ১', `অজ্ঞানতিমিরন্ধস্য জ্ঞানঞ্জনশলাকয়া।\nচাক্ষুরুন্মীলিতং যেন তস্মৈ শ্রীগুরুবে নমঃ।`)">বন্দনা ১</a></li>
+                    <li><a href="#" onclick="loadContent('গুরু বন্দনা ২', `নমঃ ওং বিষ্ণুপাদায় কৃষ্ণপ্রেষ্ঠায় ভূতলে।\nশ্রীমতে নমঃ তে সস্বত্ব স্বরূপে ভক্তি প্রদায়িনে।`)">বন্দনা ২</a></li>
+                </ul>
+            </li>
 
-<div class="no-print controls">
-  <button class="add-btn" onclick="addNewField()">+ নতুন বই</button>
-  <label class="upload-btn" for="file-input">Excel আপলোড</label>
-  <input type="file" id="file-input" accept=".xlsx,.xls,.csv">
-  <label class="hdr"><input type="checkbox" id="skip-header"> প্রথম সারি বাদ দিন</label>
-  <button class="print-btn" onclick="window.print()">প্রিন্ট (A4)</button>
-  <button class="clear-btn" onclick="clearAll()">সব মুছুন</button>
-  <button class="inventor-btn" onclick="openInventorModal()">উদ্ভাবক</button>
-</div>
+            <li class="menu-item">
+                <a href="#">বৈষ্ণব বন্দনা ▾</a>
+                <ul class="submenu">
+                    <li><a href="#" onclick="loadContent('বৈষ্ণব বন্দনা ১', `বাঞ্ছাকল্পতরূপ্যশ্চ কৃপাসিন্ধুভ এব চ।\nপতিতানাং পাবনেভ্যো বৈষ্ণবেভ্যো নমো নমঃ।`)">বন্দনা ১</a></li>
+                    <li><a href="#" onclick="loadContent('বৈষ্ণব বন্দনা ২', `হে বৈষ্ণব ঠাকুর, দয়া কর মোর প্রতি।\nযুগল চরণ যেন পাই জনমে জনমে।`)">বন্দনা ২</a></li>
+                </ul>
+            </li>
 
-<div id="inventorModal" class="modal">
-  <div class="modal-content">
-    <h3>উদ্ভাবক পরিচিতি</h3>
-    <p>পরিমল চন্দ্র রায় <br>
-      <a href="mailto:porimolcroy@gmail.com" style="color:#007bff;text-decoration:none">porimolcroy@gmail.com</a>
-    </p>
-    <button class="close-btn" onclick="closeInventorModal()">বন্ধ করুন</button>
-  </div>
-</div>
+            <li class="menu-item">
+                <a href="#">নিত্যানন্দ বন্দনা ▾</a>
+                <ul class="submenu">
+                    <li><a href="#" onclick="loadContent('নিত্যানন্দ বন্দনা ১', `নিত্যানন্দ অহং বন্দে করুণাঘনবিগ্রহম্।\nসংকীর্তনপ্রিযং দেবং নিত্যানন্দং ভজাম্যহম্।`)">বন্দনা ১</a></li>
+                    <li><a href="#" onclick="loadContent('নিত্যানন্দ বন্দনা ২', `ভজ নিত্যানন্দ, বল নিত্যানন্দ,\nবিনা নিত্যানন্দে নাই গো সম্বন্ধ।`)">বন্দনা ২</a></li>
+                </ul>
+            </li>
 
-<script>
-let count = 0;
-const grid = document.getElementById('barcode-grid');
-const statusEl = document.getElementById('status');
+            <li class="menu-item">
+                <a href="#">গৌর বন্দনা ▾</a>
+                <ul class="submenu">
+                    <li><a href="#" onclick="loadContent('গৌর বন্দনা ১', `নমো মহাবদ্যাদায় কৃষ্ণপ্রেমপ্রদায় তে।\nকৃষ্ণায় কৃষ্ণচৈতন্যনাম্নে গৌরত্ববিষে নমঃ।`)">বন্দনা ১</a></li>
+                    <li><a href="#" onclick="loadContent('গৌর বন্দনা ২', `জয় শচীনন্দন গৌর হরি,\nপতিত পাবন করুণা অবতার।`)">বন্দনা ২</a></li>
+                </ul>
+            </li>
 
-function setStatus(msg, err){ statusEl.textContent = msg; statusEl.className = 'status' + (err ? ' err' : ''); }
+            <li class="menu-item">
+                <a href="#">রাধাকৃষ্ণ বন্দনা ▾</a>
+                <ul class="submenu">
+                    <li><a href="#" onclick="loadContent('রাধাকৃষ্ণ বন্দনা ১', `হে কৃষ্ণ করুণাসিন্ধু দীনবন্ধু জগৎপথপতে।\nগোপেশ গোপীকান্ত রাধাকান্ত নমোঽস্তুতে।`)">বন্দনা ১</a></li>
+                    <li><a href="#" onclick="loadContent('রাধাকৃষ্ণ বন্দনা ২', `রাধে কৃষ্ণ রাধে কৃষ্ণ কৃষ্ণ কৃষ্ণ রাধে রাধে।\nরাধে শ্যাম রাধে শ্যাম শ্যাম শ্যাম রাধে রাধে।`)">বন্দনা ২</a></li>
+                </ul>
+            </li>
 
-function addNewField(value, focus){
-  count++;
-  const id = count;
-  const div = document.createElement('div');
-  div.className = 'barcode-card';
-  div.innerHTML = `
-    <input type="text" class="input-box no-print" id="barcode-input-${id}" placeholder="Barcode" oninput="drawBarcode(${id})" onkeydown="checkNextField(event)">
-    <svg id="barcode-svg-${id}"></svg>`;
-  grid.appendChild(div);
-  const input = document.getElementById('barcode-input-' + id);
-  if (value !== undefined && typeof value !== 'object') { input.value = value; drawBarcode(id); }
-  if (focus !== false && (value === undefined || typeof value === 'object')) input.focus();
-}
+            <li class="menu-item">
+                <a href="#">অন্যান্য ভজন ▾</a>
+                <ul class="submenu">
+                    <li><a href="#" onclick="loadContent('ব্রজরাজ সুতাষ্টকম', `নবনীরদ নিন্দিত কান্তিধরম…\nশ্রীকৃষ্ণ ভজ মন পরম সুখদম।`)">ব্রজরাজ সুতাষ্টকম</a></li>
+                    <li><a href="#" onclick="loadContent('শ্রীকৃষ্ণের অষ্টোত্তর শতনাম', `হে কৃষ্ণ, হে মাধব, হে কেশব...`)">শ্রীকৃষ্ণের অষ্টোত্তর শতনাম</a></li>
+                    <li><a href="#" onclick="loadContent('অন্যান্য কীর্তন', `জয় গোবিন্দ জয় গোপাল কেশব মাধব দিনও দয়াল\nহে নাথ নারায়ন হরি...`)">অন্যান্য কীর্তনসমূহ</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
 
-function drawBarcode(id){
-  const value = document.getElementById('barcode-input-' + id).value;
-  const svg = document.getElementById('barcode-svg-' + id);
-  if (value.trim() !== '') {
-    try {
-      JsBarcode('#barcode-svg-' + id, value.trim(), {format:'CODE128', width:1.2, height:10, displayValue:true, fontSize:11, margin:0});
-    } catch (e) { svg.innerHTML = ''; }
-  } else { svg.innerHTML = ''; }
-}
+    <div class="container">
+        <div class="content-box" id="displayArea">
+            <h2>স্বাগত!</h2>
+            <div class="kirtan-text">উপরের মেনু বা সাবমেনু থেকে যেকোনো বন্দনা বা ভজন নির্বাচন করুন।\nনির্বাচিত পদ বা কীর্তন এখানে স্বয়ংক্রিয়ভাবে প্রদর্শিত হবে।</div>
+        </div>
+    </div>
 
-function checkNextField(event){
-  if (event.key === 'Enter') { event.preventDefault(); addNewField(); }
-}
+    <footer>
+        <p>&copy; ২০২৬ ভজন ও কীর্তন সংকলন। সর্বস্বত্ব সংরক্ষিত।</p>
+    </footer>
 
-function removeEmptyCards(){
-  grid.querySelectorAll('.barcode-card').forEach(c => {
-    const inp = c.querySelector('input');
-    if (!inp.value.trim()) c.remove();
-  });
-}
+    <script>
+        function loadContent(title, text) {
+            const displayArea = document.getElementById('displayArea');
+            displayArea.innerHTML = `<h2>${title}</h2><div class="kirtan-text">${text}</div>`;
+        }
+    </script>
 
-function clearAll(){
-  if (grid.children.length > 1 && !confirm('সব বারকোড মুছে ফেলবেন?')) return;
-  grid.innerHTML = '';
-  setStatus('Excel ফাইলের প্রথম কলামের সংখ্যা আপলোড করলে অটো বারকোড হবে।');
-  addNewField();
-}
-
-document.getElementById('file-input').addEventListener('change', function(e){
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev){
-    try {
-      const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array'});
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:false, defval:''});
-      let values = rows.map(r => String(r[0] === undefined ? '' : r[0]).trim()).filter(v => v !== '');
-      if (document.getElementById('skip-header').checked) values = values.slice(1);
-      if (!values.length) { setStatus('প্রথম কলামে কোনো সংখ্যা পাওয়া যায়নি।', true); return; }
-      removeEmptyCards();
-      values.forEach(v => addNewField(v, false));
-      setStatus(values.length + 'টি বারকোড তৈরি হয়েছে (ফাইল: ' + file.name + ')');
-    } catch (err) {
-      setStatus('ফাইলটি পড়া যায়নি। .xlsx, .xls বা .csv ফাইল দিন।', true);
-    }
-    e.target.value = '';
-  };
-  reader.readAsArrayBuffer(file);
-});
-
-function openInventorModal(){ document.getElementById('inventorModal').style.display = 'flex'; }
-function closeInventorModal(){ document.getElementById('inventorModal').style.display = 'none'; }
-
-window.onload = function(){ addNewField(); };
-</script>
 </body>
 </html>
